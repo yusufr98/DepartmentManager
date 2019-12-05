@@ -1,7 +1,6 @@
 package com.example.demo;
 
 import com.cloudinary.utils.ObjectUtils;
-import javafx.scene.canvas.GraphicsContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
