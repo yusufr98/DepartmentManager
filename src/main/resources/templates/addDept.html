@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="base :: headstuff"></head>
+<body>
+<nav th:replace="base :: navbar"></nav>
+<div class="container">
+<div class="jumbotron col-md-6 mx-auto" style="margin-top: 20px; padding-top: 2rem">
+    <div class="mx-auto">
+        <h1 class="display-4">Add a Department</h1>
+    </div>
+    <form class="form-signin mx-auto"action="#" th:action="@{/processDept}" th:object="${department}" method="post" enctype="multipart/form-data">
+        <input type="hidden" th:field="*{id}" />
+        <div class="form-label-group">
+            <input type="text" class="form-control" id="name" name="name" th:field="*{name}" placeholder="Name" required autofocus/>
+            <label for="name">Name</label>
+        </div>
+        <button class="btn btn-lg btn-primary btn-block text-uppercase" type="submit">Submit</button>
+    </form>
+</div>
+</div>
+<footer th:replace="base :: footer"></footer>
+</body>
+<th:block th:replace="base :: jslinks"></th:block>
+</html>
