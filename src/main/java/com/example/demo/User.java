@@ -53,7 +53,7 @@ public class User {
         this.enabled = enabled;
         this.username = username;
     }
-    public User(String email, String password, String firstName, String lastName, String username, boolean enabled, Department department) {
+    public User(String email, String password, String firstName, String lastName, String username, boolean enabled, Department department, String url) {
         this.email = email;
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         this.password = passwordEncoder.encode(password);
@@ -62,6 +62,7 @@ public class User {
         this.enabled = enabled;
         this.username = username;
         this.department = department;
+        this.url = url;
     }
 
     public long getId() {
@@ -119,6 +120,14 @@ public class User {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 
     public Collection<Role> getRoles() {

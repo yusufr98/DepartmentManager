@@ -1,13 +1,18 @@
 package com.example.demo;
 
+import com.cloudinary.utils.ObjectUtils;
 import javafx.scene.canvas.GraphicsContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.io.IOException;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 @Controller
@@ -66,7 +71,13 @@ public class HomeController {
     }
 
     @PostMapping("/processEmp")
-    public String processEmp(@Valid @ModelAttribute User employee, @RequestParam("deptId") long id){
+    public String processEmp(@Valid @ModelAttribute User employee, @RequestParam("deptId") long id, @RequestParam("file") MultipartFile file, BindingResult result){
+        if(file.isEmpty() && (employee.getUrl()==null || employee.getUrl().equals(""))){
+            return "redirect:/addEmp";
+        }
+        if(result.hasErrors()){
+            return "addEmp";
+        }
         Department department = departmentRepository.findById(id).get();
         employee.setDepartment(department);
         Set<User> users;
@@ -76,9 +87,21 @@ public class HomeController {
         else{
             users = new HashSet<>();
         }
+        if(!file.isEmpty()){
+            try {
+                Map uploadResult = cloudc.upload(file.getBytes(), ObjectUtils.asMap("resourcetype", "auto"));
+                employee.setUrl(uploadResult.get("url").toString());
+                userRepository.save(employee);
+            } catch (IOException e) {
+                e.printStackTrace();
+                return "redirect:/addEmp";
+            }
+        }
+        else{
+            userRepository.save(employee);
+        }
         users.add(employee);
         department.setEmployees(users);
-        userRepository.save(employee);
         departmentRepository.save(department);
         return "redirect:/";
     }
@@ -88,13 +111,26 @@ public class HomeController {
         return "redirect:/";
     }
 
-    @RequestMapping("/update/{id}")
-    public String updateEmp(@PathVariable("id") long id, Model model){
-        model.addAttribute("");
-        return "add";
+    @RequestMapping("/updateDept/{id}")
+    public String updateDept(@PathVariable("id") long id, Model model){
+        model.addAttribute("department", departmentRepository.findById(id));
+        return "addDept";
     }
 
-    @RequestMapping("/delete/{id}")
+    @RequestMapping("/updateEmp/{id}")
+    public String updateEmp(@PathVariable("id") long id, Model model){
+        model.addAttribute("employee", userRepository.findById(id).get());
+        model.addAttribute("departments", departmentRepository.findAll());
+        return "addEmp";
+    }
+
+    @RequestMapping("/deleteDept/{id}")
+    public String delDept(@PathVariable("id") long id){
+        departmentRepository.deleteById(id);
+        return "redirect:/";
+    }
+
+    @RequestMapping("/deleteEmp/{id}")
     public String delEmp(@PathVariable("id") long id){
         userRepository.deleteById(id);
         return "redirect:/";

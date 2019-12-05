@@ -21,7 +21,20 @@
                 <div class="card-body">
                     <ul class="list-group list-group-flush">
                         <th:block th:each="employee : ${department.employees}">
-                        <li class="list-group-item" th:inline="text">[[${employee.getFirstName()}]] [[${employee.getLastName()}]]</li>
+                            <li class="list-group-item" th:inline="text"><div class="col-md-10">[[${employee.getFirstName()}]] [[${employee.getLastName()}]]</div>
+                            <div class="col-md-2 img-square-wrapper img-download">
+                                <img class="card-img" th:src="${employee.url}" alt="Headshot">
+                                <a data-toggle="collapse" th:href="'#collapse_'+${employee.id}" role="button" aria-expanded="false" aria-controls="collapseExample">
+                                    <span style="font-size:1.25em;"><i class="fas fa-cog"></i></span>
+                                </a>
+                                <div class="collapse" th:id="'collapse_'+${employee.id}">
+                                    <div class="card card-body card-menu card-body-collapse">
+                                        <a class="nav-link" role="button" th:href="@{/updateEmp/{id}(id=${employee.id})}"><i class="fas fa-edit"></i></a>
+                                        <a class="nav-link" role="button" th:href="@{/deleteEmp/{id}(id=${employee.id})}"><i class="fas fa-trash-alt"></i></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
                         </th:block>
                     </ul>
                 </div>

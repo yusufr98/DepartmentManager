@@ -11,6 +11,7 @@
         <form class="form-signin mx-auto" action="#" th:action="@{/processEmp}" th:object="${employee}" method="post"
               enctype="multipart/form-data">
             <input type="hidden" th:field="*{id}"/>
+            <input type="hidden" th:field="*{url}"/>
             <div class="form-label-group">
                 <input type="text" class="form-control" id="firstname" name="firstname" th:field="*{firstName}"
                        placeholder="First Name" required autofocus/>
@@ -31,19 +32,35 @@
                        placeholder="User Name" required autofocus/>
                 <label for="username">Username</label>
             </div>
-            <div class="form-label-group">
-                <input type="password" class="form-control" id="password" name="password" th:field="*{password}"
+            <input type="hidden" th:field="*{password}"/>
+            <div th:if="${employee.password != null}" class="form-label-group">
+                <input type="password" class="form-control" id="password1" name="password1" th:field="*{password}"
+                       placeholder="Password"/>
+                <label for="password1">Password</label>
+            </div>
+            <div th:if="${employee.password == null}" class="form-label-group">
+                <input type="password" class="form-control" id="password2" name="password2" th:field="*{password}"
                        placeholder="Password" required autofocus/>
-                <label for="password">Password</label>
+                <label for="password2">Password</label>
             </div>
-            <div class="form-label-group">
-                <select class="form-control" name="deptId">
-                    <option th:each="dept : ${departments}" th:value="${dept.id}" th:text="${dept.name}"></option>
-                </select>
-            </div>
-            <button class="btn btn-lg btn-primary btn-block text-uppercase" type="submit">Submit</button>
-        </form>
+    <div class="form-group">
+        <div th:if="${employee.url != null and !employee.url.equals('')}">
+            <img th:src="${employee.url}"/>
+        </div>
+        <label th:if="${employee.url != null and !employee.url.equals('')}" for="image">Image(Optional, max size: 1MB)</label>
+        <label th:unless="${employee.url != null and !employee.url.equals('')}" for="image">Image(max size: 1MB)</label>
+        <input type="file" class="form-control-file" id="image" name="file" th:src="${employee.url}"/>
+        <input type="hidden" th:field="*{id}"/>
     </div>
+    <div class="form-label-group">
+        <select class="form-control" name="deptId">
+            <option th:each="dept : ${departments}" th:selected="${dept.id}" th:value="${dept.id}"
+                    th:text="${dept.name}"></option>
+        </select>
+    </div>
+    <button class="btn btn-lg btn-primary btn-block text-uppercase" type="submit">Submit</button>
+    </form>
+</div>
 </div>
 <footer th:replace="base :: footer"></footer>
 </body>
